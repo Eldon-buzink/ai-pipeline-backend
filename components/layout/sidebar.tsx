@@ -3,13 +3,14 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Home, Users, Settings, Wrench, Pin, PinOff } from "lucide-react";
 
 // Mock navigation items - replace with actual nav structure
 const NAV_ITEMS = [
-  { id: "home", label: "Dashboard", href: "/", icon: "🏠" },
-  { id: "agents", label: "Agents", href: "/agents", icon: "🤖" },
-  { id: "gateway", label: "Gateway", href: "/gateway", icon: "⚙️" },
-  { id: "settings", label: "Settings", href: "/settings", icon: "🔧" },
+  { id: "home", label: "Dashboard", href: "/", icon: Home },
+  { id: "agents", label: "Agents", href: "/agents", icon: Users },
+  { id: "gateway", label: "Gateway", href: "/gateway", icon: Settings },
+  { id: "settings", label: "Settings", href: "/settings", icon: Wrench },
 ];
 
 export function Sidebar() {
@@ -56,8 +57,8 @@ export function Sidebar() {
               title={item.label}
             >
               {/* Icon */}
-              <span className="flex-shrink-0 w-6 h-6 flex items-center justify-center text-lg">
-                {item.icon}
+              <span className="flex-shrink-0 w-6 h-6 flex items-center justify-center">
+                <item.icon size={24} className="text-[var(--color-text-primary)]" />
               </span>
 
               {/* Label (visible when expanded) */}
@@ -91,7 +92,11 @@ export function Sidebar() {
           title={isPinned ? "Unpin sidebar" : "Pin sidebar"}
           aria-pressed={isPinned}
         >
-          <span className="text-lg">{isPinned ? "📌" : "📍"}</span>
+          {isPinned ? (
+            <Pin size={24} />
+          ) : (
+            <PinOff size={24} />
+          )}
         </button>
       </div>
     </aside>
