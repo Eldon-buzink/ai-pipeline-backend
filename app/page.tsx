@@ -1,65 +1,72 @@
-import Image from "next/image";
-
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="flex-1 flex flex-col w-full bg-[var(--color-bg-primary)] overflow-y-auto">
+      {/* Page Header */}
+      <header className="sticky top-0 flex flex-col gap-4 p-[var(--spacing-xl)] border-b border-[var(--color-border)] bg-[var(--color-bg-surface)] bg-opacity-95 backdrop-blur-sm">
+        <div className="flex items-center justify-between">
+          <nav className="flex items-center gap-1 text-sm text-[var(--color-text-secondary)]">
+            <span>Home</span>
+            <span>/</span>
+            <span className="text-[var(--color-text-primary)]">Dashboard</span>
+          </nav>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <h1 className="text-2xl font-semibold text-[var(--color-text-primary)]">
+          Dashboard
+        </h1>
+      </header>
+
+      {/* Main Content */}
+      <div className="flex-1 p-[var(--spacing-xl)]">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Agent Status Cards */}
+          {[
+            { name: "Tyler", status: "active", port: 18789 },
+            { name: "Orion", status: "active", port: 18790 },
+            { name: "Carly", status: "idle", port: 18791 },
+            { name: "Axel", status: "error", port: 18792 },
+          ].map((agent) => (
+            <div
+              key={agent.name}
+              className="flex flex-col gap-3 p-4 rounded-lg bg-[var(--color-bg-surface)] border border-[var(--color-border)] hover:border-[var(--color-text-secondary)] transition-colors"
+            >
+              <div className="flex items-center justify-between">
+                <h3 className="font-semibold text-[var(--color-text-primary)]">
+                  {agent.name}
+                </h3>
+                <span
+                  className={`inline-block w-2 h-2 rounded-full ${
+                    agent.status === "active"
+                      ? "bg-green-500"
+                      : agent.status === "idle"
+                        ? "bg-yellow-500"
+                        : "bg-red-500"
+                  }`}
+                />
+              </div>
+              <p className="text-sm text-[var(--color-text-secondary)]">
+                Port: {agent.port}
+              </p>
+              <p className="text-xs text-[var(--color-text-secondary)]">
+                Status: <span className="capitalize">{agent.status}</span>
+              </p>
+            </div>
+          ))}
         </div>
-      </main>
+
+        {/* Layout Verification Notice */}
+        <div className="mt-8 p-4 rounded-lg bg-[var(--color-bg-surface)] border-l-2 border-[var(--color-accent-signal)]">
+          <h2 className="font-semibold text-[var(--color-text-primary)] mb-2">
+            Phase 1: Layout Geometry
+          </h2>
+          <ul className="text-sm text-[var(--color-text-secondary)] space-y-1">
+            <li>Sidebar: 48px collapsed (icon-rail only)</li>
+            <li>Main content: ml-[48px] offset applied</li>
+            <li>Hover sidebar to expand (200px)</li>
+            <li>Click pin icon to lock expanded state</li>
+            <li>Pin state persists in localStorage</li>
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }
