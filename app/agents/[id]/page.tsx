@@ -23,19 +23,6 @@ const AGENTS: Record<string, Agent> = {
   axel: { id: 'axel', name: 'Axel', port: 18792 },
 };
 
-function parseHealthResponse(data: any): AgentStatus {
-  // Normalize gateway health endpoint response
-  const status = data.status || data.state || 'idle';
-  const lastSeen = data.lastSeen || data.timestamp || Date.now();
-  const currentTask = data.currentTask || data.task || null;
-
-  return {
-    status: ['active', 'idle', 'error'].includes(status) ? status : 'idle',
-    lastSeen: typeof lastSeen === 'number' ? lastSeen : Date.now(),
-    currentTask: currentTask ? String(currentTask) : null,
-  };
-}
-
 export default function AgentDetailPage() {
   const params = useParams();
   const agentId = params?.id as string;
@@ -54,27 +41,21 @@ export default function AgentDetailPage() {
 
     const fetchStatus = async () => {
       try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000);
-
-        const response = await fetch(`http://localhost:${agent.port}/health`, {
-          signal: controller.signal,
+        const response = await fetch(`/api/health?agent=${agent.id}`, {
+          signal: AbortSignal.timeout(5000),
         });
-
-        clearTimeout(timeoutId);
 
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`);
         }
 
         const data = await response.json();
-        const normalizedStatus = parseHealthResponse(data);
         
-        setStatus(normalizedStatus);
+        setStatus(data);
         setError(null);
 
         // Check for staleness (> 1 hour)
-        const age = Date.now() - normalizedStatus.lastSeen;
+        const age = Date.now() - data.lastSeen;
         setIsStale(age > 60 * 60 * 1000);
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : 'Failed to fetch status';
@@ -212,7 +193,7 @@ export default function AgentDetailPage() {
                 }`}
               >
                 {new Date(status.lastSeen).toLocaleString()}
-                {isStale && ' (stale — >1h ago)'}
+                {isStale && ' (stale — &gt;1h ago)'}
               </p>
             </div>
           )}
@@ -259,7 +240,7 @@ export default function AgentDetailPage() {
                 Health Endpoint
               </span>
               <span className="font-mono text-xs text-[var(--color-text-primary)]">
-                localhost:{agent.port}/health
+                /api/health?agent={agent.id}
               </span>
             </div>
           </div>

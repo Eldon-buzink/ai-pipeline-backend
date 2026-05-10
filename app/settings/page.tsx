@@ -16,14 +16,6 @@ export default function SettingsPage() {
         <p className="text-[var(--color-text-secondary)] mb-4">
           Settings page — final route test for layout verification.
         </p>
-        <div className="p-4 rounded-lg bg-[var(--color-bg-surface)] border border-[var(--color-border)]">
-          <h2 className="font-semibold text-[var(--color-text-primary)] mb-2">Phase 1 Complete</h2>
-          <p className="text-sm text-[var(--color-text-secondary)]">
-            Sidebar collapse implementation (icon-only mode): 48px default, 200px expanded.
-            <br />Nav spacing audit: 12px gaps, 40px item height.
-            <br />Layout offset verified on all routes.
-          </p>
-        </div>
       </div>
     </div>
   );

@@ -25,19 +25,6 @@ const AGENT_CONFIGS = [
   { id: 'axel', name: 'Axel', port: 18792 },
 ];
 
-function parseHealthResponse(data: any): AgentStatus {
-  // Normalize gateway health endpoint response
-  const status = data.status || data.state || 'idle';
-  const lastSeen = data.lastSeen || data.timestamp || Date.now();
-  const currentTask = data.currentTask || data.task || null;
-
-  return {
-    status: ['active', 'idle', 'error'].includes(status) ? status : 'idle',
-    lastSeen: typeof lastSeen === 'number' ? lastSeen : Date.now(),
-    currentTask: currentTask ? String(currentTask) : null,
-  };
-}
-
 function isStale(lastSeen: number): boolean {
   return Date.now() - lastSeen > 60 * 60 * 1000; // > 1 hour
 }
@@ -56,25 +43,19 @@ export default function Home() {
     const fetchAllStatuses = async () => {
       const promises = agents.map(async (agent) => {
         try {
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 5000);
-
-          const response = await fetch(`http://localhost:${agent.port}/health`, {
-            signal: controller.signal,
+          const response = await fetch(`/api/health/${agent.id}`, {
+            signal: AbortSignal.timeout(5000),
           });
-
-          clearTimeout(timeoutId);
 
           if (!response.ok) {
             throw new Error(`HTTP ${response.status}`);
           }
 
           const data = await response.json();
-          const normalizedStatus = parseHealthResponse(data);
 
           return {
             ...agent,
-            status: normalizedStatus,
+            status: data,
             loading: false,
             error: null,
           };
@@ -182,21 +163,6 @@ export default function Home() {
               </Link>
             );
           })}
-        </div>
-
-        {/* Status Section */}
-        <div className="mt-8 p-4 rounded-lg bg-[var(--color-bg-surface)] border-l-2 border-[var(--color-accent-signal)]">
-          <h2 className="font-semibold text-[var(--color-text-primary)] mb-2">
-            Phase 1 & Phase 2: Complete
-          </h2>
-          <ul className="text-sm text-[var(--color-text-secondary)] space-y-1">
-            <li>✓ Agent card navigation → click card → /agents/[id] detail page</li>
-            <li>✓ Hover state with cursor: pointer for UX feedback</li>
-            <li>✓ Live agent status polling (10s intervals) from health endpoints</li>
-            <li>✓ Normalized status shape: {`{status, lastSeen, currentTask}`}</li>
-            <li>✓ Amber tint on lastSeen when staleness &gt; 1h</li>
-            <li>✓ All 4 agents (Tyler, Orion, Carly, Axel) navigate correctly</li>
-          </ul>
         </div>
       </div>
     </div>
