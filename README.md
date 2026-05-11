@@ -8,7 +8,7 @@ A Next.js-based dashboard for the Agent Pipeline Backend v1. This application pr
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS
 - **Package Manager:** pnpm
-- **Backend:** Supabase (PostgreSQL)
+- **Icons:** Lucide React
 
 ## Getting Started
 
@@ -40,11 +40,7 @@ pnpm start
 
 ## Environment Variables
 
-Copy `.env.local.example` to `.env.local` and fill in your Supabase credentials:
-
-```bash
-cp .env.local.example .env.local
-```
+No environment variables are required for this application.
 
 ## Project Structure
 
